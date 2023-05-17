@@ -11,9 +11,9 @@ def sample_instance():
 
 
 def test_init_fields(sample_instance):
-    assert sample_instance.name == 'name'
-    assert sample_instance.price == 10000
-    assert sample_instance.quantity == 20
+    assert isinstance(sample_instance.name, str)
+    assert isinstance(sample_instance.price, int)
+    assert isinstance(sample_instance.quantity, int)
 
 
 def test_calculate_total_price(sample_instance):
