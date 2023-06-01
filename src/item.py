@@ -32,12 +32,11 @@ class Item:
         return self.__name
 
 
-    @name.setter
+    Edit
     def name(self, new_name: str):
-        if len(new_name) <= 10:
-            self.__name = new_name
-        else:
+        if len(new_name) > 10:
             raise Exception('Длина наименования товара больше 10 символов')
+        self.__name = new_name
 
 
     def calculate_total_price(self) -> float:
