@@ -5,10 +5,8 @@ from src.item import Item
 
 
 @pytest.fixture
-
-
 def sample_instance():
-    return Item('name', 10000, 20)
+    return Item('Test_name', 10000, 20)
 
 
 def test_init_fields(sample_instance):
@@ -37,3 +35,13 @@ def test_string_to_number():
     assert isinstance(Item.string_to_number('5'), int)
     assert Item.string_to_number('500') == 500
     assert Item.string_to_number('10.0') == 10
+
+
+def test_repr(sample_instance):
+    ob1 = sample_instance
+    assert repr(ob1) == "Item('Test_name', 10000, 20)"
+
+
+def test_str(sample_instance):
+    ob1 = sample_instance
+    assert str(ob1) == 'Test_name'
