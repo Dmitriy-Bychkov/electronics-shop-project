@@ -22,26 +22,26 @@ class Item:
 
         Item.all.append(self)
 
-
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}('{self.name}', {self.price}, {self.quantity})"
-
 
     def __str__(self) -> str:
         return f"{self.name}"
 
+    def __add__(self, other):
+        if not issubclass(other.__class__, self.__class__):
+            raise ValueError('Сложить можно только экземпляры у классов Item и Phone')
+        return int(self.quantity) + int(other.quantity)
 
     @property
     def name(self):
         return self.__name
-
 
     @name.setter
     def name(self, new_name: str):
         if len(new_name) > 10:
             raise Exception('Длина наименования товара больше 10 символов')
         self.__name = new_name
-
 
     def calculate_total_price(self) -> float:
         """
@@ -51,13 +51,11 @@ class Item:
         """
         return self.price * self.quantity
 
-
     def apply_discount(self) -> None:
         """
         Применяет установленную скидку для конкретного товара.
         """
         self.price *= self.pay_rate
-
 
     @classmethod
     def instantiate_from_csv(cls) -> None:
@@ -72,7 +70,6 @@ class Item:
             reader = csv.DictReader(file)
             for row in reader:
                 cls(row['name'], row['price'], row['quantity'])
-                
 
     @staticmethod
     def string_to_number(number):
