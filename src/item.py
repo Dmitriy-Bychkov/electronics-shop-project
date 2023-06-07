@@ -1,5 +1,7 @@
 import csv
 
+from src.exceptions import InstantiateCSVError, CSVNotFoundError
+
 
 class Item:
     """
@@ -58,18 +60,55 @@ class Item:
         self.price *= self.pay_rate
 
     @classmethod
+    def csv_reader(cls, filename):
+        '''
+        класс-метод, читающий файл и инициализирующий экземпляры
+        класса `Item` данными из этого файла, а также содержащий блоки проверок файла CSV
+        '''
+
+        try:
+            cls.all.clear()
+
+            with open(filename, newline='') as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    cls(row['name'], row['price'], row['quantity'])
+
+                    # Запускаем цикл проверок для строк в файле и вызываем соответствующие ошибки
+                    if len(row['name']) < 1:
+                        raise InstantiateCSVError
+                    if int(row['price']) < 1:
+                        print('Ошибка: цена товара не может быть равной или меньше нуля')
+                    if int(row['quantity']) < 0:
+                        print('Ошибка: количество товара не может быть меньше нуля')
+
+                # Проверяем на пустой файл
+                if len(cls.all) <= 0:
+                    raise InstantiateCSVError
+
+        # Переопределяем стандартные ошибки Python
+        except FileNotFoundError:
+            raise CSVNotFoundError
+        except KeyError:
+            raise InstantiateCSVError
+        except ValueError:
+            raise InstantiateCSVError
+
+    @classmethod
     def instantiate_from_csv(cls) -> None:
         '''
         класс-метод, инициализирующий экземпляры класса `Item`
-        данными из файла _src/items.csv
+        данными из файла _src/items.csv и перехватывающий наши ошибки
         '''
 
-        cls.all.clear()
+        try:
+            cls.csv_reader('../src/items.csv')
 
-        with open('../src/items.csv', newline='') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                cls(row['name'], row['price'], row['quantity'])
+        # Отлавливаем и принтуем наши кастомные ошибки
+        except CSVNotFoundError as ex:
+            print(ex.message)
+        except InstantiateCSVError as ex:
+            print(ex.message)
 
     @staticmethod
     def string_to_number(number):
